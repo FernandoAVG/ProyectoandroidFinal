@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "867515531803",
+    "project_id": "androidproyecto-bbca2",
+    "storage_bucket": "androidproyecto-bbca2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867515531803:android:78038b42f82ecea880aebe",
+        "android_client_info": {
+          "package_name": "com.pruebaandroid.proyectoandroidfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa5CILOg5FV_BQKXevgFWo3kj6DRMyjHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
