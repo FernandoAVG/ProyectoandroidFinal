@@ -16,16 +16,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);  // Referencia al layout activity_main.xml
 
-
-        Button btnAction = findViewById(R.id.btn_action);
-        btnAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Toast.makeText(MainActivity.this, "Acción realizada", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Verificar si el fragmento ya está cargado, de lo contrario, cargar InicioFragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new InicioFragment())  // Cargar InicioFragment
+                    .commit();
+        }
     }
 }
