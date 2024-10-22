@@ -6,12 +6,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
@@ -31,6 +36,7 @@ public class InicioFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
+
         btn_filter = view.findViewById(R.id.btn_filter);
         btn_ordenar = view.findViewById(R.id.btn_ordenar);
         btn_crear = view.findViewById(R.id.btn_crear);
@@ -42,9 +48,10 @@ public class InicioFragment extends Fragment {
         recyclerViewTasks.setAdapter(taskAdapter);
         // Cargar tareas (esto puede venir de una base de datos, de momento estático)
         loadTasks();
+        // Se supone que navController es donde se tiene tooodo lo que sea nav, aver si funciona D:
 
         btn_crear.setOnClickListener(v -> {
-            //brayan pone tu code para navegar a tu seccion de crear tarea
+            replaceFragment(new crearTarea());
         });
 
         // Listener para el botón de filtrar
@@ -154,5 +161,11 @@ public class InicioFragment extends Fragment {
         taskList.add(new Task("Reunión de trabajo", "Zoom a las 10am", "trabajo", "verde"));
         taskAdapter.notifyDataSetChanged(); // Actualizar la lista en el RecyclerView
     }
-
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getParentFragmentManager(); // Usa getParentFragmentManager si el fragmento está anidado
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment); // Asegúrate de que este ID coincida con tu contenedor en el layout de la actividad
+        fragmentTransaction.addToBackStack(null); // Para permitir volver al fragmento anterior
+        fragmentTransaction.commit();
+    }
 }

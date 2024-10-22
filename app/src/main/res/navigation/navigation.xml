@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/registerActivity">
+    app:startDestination="@id/fragmentoMain">
 
+    <!-- Definición de actividades -->
     <activity
         android:id="@+id/registerActivity"
         android:name="com.pruebaandroid.proyectoandroidfirebase.RegisterActivity"
         android:label="activity_register"
         tools:layout="@layout/activity_register" >
-        <action
-            android:id="@+id/action_register_to_main"
-            app:destination="@id/mainActivity" />
+        <!-- Acción para ir a la actividad principal -->
     </activity>
 
     <activity
@@ -20,4 +19,27 @@
         android:name="com.pruebaandroid.proyectoandroidfirebase.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
+
+    <!-- Definición de fragmentos -->
+    <fragment
+        android:id="@+id/fragmentoMain"
+        android:name="com.pruebaandroid.proyectoandroidfirebase.InicioFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_inicio">
+        <!-- Acción para ir al fragmento Crear -->
+        <action
+            android:id="@+id/action_to_crear"
+            app:destination="@id/fragmentoCrear" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentoCrear"
+        android:name="com.pruebaandroid.proyectoandroidfirebase.crearTarea"
+        android:label="CrearTarea"
+        tools:layout="@layout/fragment_crear">
+        <!-- Acción para volver al fragmento Main -->
+        <action
+            android:id="@+id/action_to_volver"
+            app:destination="@id/fragmentoMain" />
+    </fragment>
 </navigation>

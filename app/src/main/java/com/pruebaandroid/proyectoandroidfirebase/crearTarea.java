@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.DatePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,20 +42,25 @@ public class crearTarea extends Fragment {
     private Button buttonCrear, buttonVolver;
     private Calendar calendar;
     private ChipGroup chipGroup; // Añadir ChipGroup
+    private SeekBar seekBar;
+    private TextView textViewValue;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Infla el layout del fragmento
         View view = inflater.inflate(R.layout.fragment_crear, container, false);
 
-        // Referencias a los campos de texto y el botón
+        // Referencias a los campos de texto, botón y slider
         editTitulo = view.findViewById(R.id.edit_Titulo);
         editDescripcion = view.findViewById(R.id.miEditText);
         buttonCrear = view.findViewById(R.id.bt_crearfrag);
         buttonVolver = view.findViewById(R.id.bt_volver);
         etFecha = view.findViewById(R.id.etFecha);
-        chipGroup = view.findViewById(R.id.chip_group); // Referencia al ChipGroup
+        chipGroup = view.findViewById(R.id.chip_group);
+        TextView tvPrioridad = view.findViewById(R.id.txt_prioridad);
+        SeekBar seekBarPrioridad = view.findViewById(R.id.seekBar_prioridad);
         calendar = Calendar.getInstance();
+
         Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.iconcalendar);
 
         // Ajustar el tamaño del ícono de calendario
@@ -68,6 +75,25 @@ public class crearTarea extends Fragment {
         // Obtener el usuario actual de FirebaseAuth
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // Configurar el SeekBar de prioridad
+        seekBarPrioridad.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int prioridad = progress + 1;  // Ajustar de 0-4 a 1-5
+                tvPrioridad.setText("Prioridad: " + prioridad);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // No se necesita implementar aquí
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // No se necesita implementar aquí
+            }
+        });
+
         // Configurar el botón de "Crear"
         buttonCrear.setOnClickListener(v -> {
             if (user != null) {
@@ -76,10 +102,11 @@ public class crearTarea extends Fragment {
                 String descripcion = editDescripcion.getText().toString();
                 String fecha = etFecha.getText().toString();
                 List<String> etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
+                int prioridad = seekBarPrioridad.getProgress() + 1;  // Obtener valor de prioridad (1-5)
 
                 if (!titulo.isEmpty() && !descripcion.isEmpty() && !fecha.isEmpty()) {
                     // Llamar a la función para guardar los datos en Firebase
-                    guardarTareaEnFirebase(userId, titulo, descripcion, fecha, etiquetasSeleccionadas);
+                    guardarTareaEnFirebase(userId, titulo, descripcion, fecha, etiquetasSeleccionadas, prioridad);
                 } else {
                     Toast.makeText(getContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show();
                 }
@@ -90,27 +117,15 @@ public class crearTarea extends Fragment {
 
         // Configurar el botón de "Volver"
         buttonVolver.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(requireActivity(), R.id.main);
+            NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.action_to_volver);
         });
 
         return view;
     }
 
-    // Método para obtener las etiquetas seleccionadas
-    private List<String> obtenerEtiquetasSeleccionadas() {
-        List<String> etiquetas = new ArrayList<>();
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
-            if (chip.isChecked()) {
-                etiquetas.add(chip.getText().toString());
-            }
-        }
-        return etiquetas;
-    }
-
     // Método para guardar los datos en Firebase
-    private void guardarTareaEnFirebase(String userId, String titulo, String descripcion, String fecha, List<String> etiquetas) {
+    private void guardarTareaEnFirebase(String userId, String titulo, String descripcion, String fecha, List<String> etiquetas, int prioridad) {
         // Obtener la referencia de Firebase Realtime Database
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
@@ -120,6 +135,7 @@ public class crearTarea extends Fragment {
         tareaData.put("descripcion", descripcion);
         tareaData.put("fecha", fecha);
         tareaData.put("etiquetas", etiquetas);
+        tareaData.put("prioridad", prioridad);  // Agregar la prioridad
 
         // Guardar los datos bajo el nodo "tareas/{userId}/{tareaId}"
         String tareaId = database.child("tareas").child(userId).push().getKey();
@@ -145,6 +161,17 @@ public class crearTarea extends Fragment {
             Chip chip = (Chip) chipGroup.getChildAt(i);
             chip.setChecked(false);  // Desmarcar los chips seleccionados
         }
+    }
+    // Método para obtener las etiquetas seleccionadas
+    private List<String> obtenerEtiquetasSeleccionadas() {
+        List<String> etiquetas = new ArrayList<>();
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.isChecked()) {
+                etiquetas.add(chip.getText().toString());
+            }
+        }
+        return etiquetas;
     }
 
     // Método para mostrar el selector de fecha
