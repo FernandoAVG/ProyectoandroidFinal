@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".crearTarea">
+
+    <TextView
+        android:id="@+id/txt_titulo"
+        android:layout_width="137dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="center"
+        android:text="Titulo"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_Titulo"
+        android:layout_width="333dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/fondo_texto"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Ingrese Titulo"
+        android:inputType="text"
+        android:padding="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_titulo" />
+
+    <TextView
+        android:id="@+id/txt_descripcion"
+        android:layout_width="137dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="center"
+        android:text="Descripcion"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.861"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_Titulo" />
+
+    <EditText
+        android:id="@+id/miEditText"
+        android:layout_width="334dp"
+        android:layout_height="89dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="top|start"
+        android:hint="Escribe tu descripción aquí..."
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:overScrollMode="ifContentScrolls"
+        android:padding="12sp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_descripcion" />
+
+    <Button
+        android:id="@+id/bt_volver"
+        android:layout_width="134dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#666666"
+        android:text="Volver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bt_crearfrag"
+        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_crearfrag"
+        android:layout_width="134dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#666666"
+        android:text="Crear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_fechalimit"
+        android:layout_width="96dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="center"
+        android:text="Fecha Limite:"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/miEditText" />
+
+    <EditText
+        android:id="@+id/etFecha"
+        android:layout_width="222dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/fondo_texto"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center"
+        android:inputType="text"
+        android:paddingEnd="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.798"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/miEditText" />
+
+    <!-- Este es el Scroll que usa las etiquetas :V -->
+
+    <ScrollView
+        android:id="@+id/scroll_view_tags"
+        android:layout_width="161dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/fondo_texto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.848"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etFecha">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:chipSpacing="8dp"
+            app:selectionRequired="false"
+            app:singleLine="false"
+            app:singleSelection="false">
+
+            <!-- Agregar Chips dinámicamente o estáticamente -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip1"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 1" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip2"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip3"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 3" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip4"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 4" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip5"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 5" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip6"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiqueta 6" />
+
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/text_etiquetas"
+        android:layout_width="112dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="center"
+        android:text="Etiquetas"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_fechalimit" />
+
+    <!-- SeekBar -->
+
+    <TextView
+        android:id="@+id/txt_prioridad"
+        android:layout_width="108dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/fondo_texto"
+        android:gravity="center"
+        android:text="Prioridad: 1"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_etiquetas" />
+
+    <SeekBar
+        android:id="@+id/seekBar_prioridad"
+        android:layout_width="327dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="44dp"
+        android:max="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_prioridad" /> <!-- Valor máximo es 4 (0 a 4) para representar 1 a 5 -->/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
