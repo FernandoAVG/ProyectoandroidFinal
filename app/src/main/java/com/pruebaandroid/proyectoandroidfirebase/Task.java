@@ -8,6 +8,7 @@ public class Task {
     private String descripcion;
     private String color;
     private String categoria; // Puede ser "Personal", "Trabajo", "Estudio", etc.
+    private boolean completada; // Nuevo coso para marcar tarea como completada
 
     // Constructor, getters y setters
     public Task(String titulo, String descripcion, String categoria, String color) {
@@ -15,6 +16,7 @@ public class Task {
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.color = color;
+        this.completada = false; // Por defecto las tareas estarán NO completadas
     }
 
     public int getId() { return id; }
@@ -22,5 +24,7 @@ public class Task {
     public String getDescripcion() { return descripcion; }
     public String getColor() { return color; }
     public String getCategoria() { return categoria; }
+    public boolean isCompletada() { return completada; }
+    public void setCompletada(boolean completada) { this.completada = completada; }
 
 }

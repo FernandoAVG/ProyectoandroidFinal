@@ -25,7 +25,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void updateTaskList(List<Task> newTaskList) {
         this.tasks = newTaskList;
+        notifyDataSetChanged(); // Notificar cambios para actualizar la vista
     }
+
 
     @NonNull
     @Override
@@ -38,6 +40,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.bind(task);
+        // lol
+        holder.itemView.setOnClickListener(v -> {
+            task.setCompletada(!task.isCompletada());
+            notifyItemChanged(position); // Actualiza la vista solo de la tarea modificada
+
+            // lo de abajo es para actualizar en la base de datos de Firebase si lo ven necesario (lo dejo como comentario)
+            // updateTaskInDatabase(task);
+        });
     }
 
     @Override
@@ -57,6 +67,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void bind(Task task) {
             titleTextView.setText(task.getTitulo());
             descriptionTextView.setText(task.getDescripcion());
+            // Cambiar el estilo si la tarea está completada
+            itemView.setAlpha(task.isCompletada() ? 0.5f : 1.0f); // Ejemplo de opacidad
         }
     }
 }
