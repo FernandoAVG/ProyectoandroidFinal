@@ -26,29 +26,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="16dp"
                 android:text="Iniciar Sesión"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:paddingBottom="16dp" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/correo_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edittext_background"
                 android:hint="Correo"
                 android:inputType="textEmailAddress"
-                android:padding="10dp"
-                android:background="@drawable/edittext_background"/>
+                android:padding="10dp" />
 
             <EditText
                 android:id="@+id/contrasena_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edittext_background"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
-                android:padding="10dp"
-                android:background="@drawable/edittext_background"/>
+                android:padding="10dp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -58,11 +58,11 @@
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Iniciar Sesión"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/design_default_color_primary"
-                android:textColor="@android:color/white"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:text="Iniciar Sesión"
+                android:textColor="@android:color/white" />
 
             <Space
                 android:layout_width="match_parent"
@@ -72,9 +72,20 @@
                 android:id="@+id/btn_registrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Registrarse"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/design_default_color_secondary"
+                android:padding="10dp"
+                android:text="Registrarse"
+                android:textColor="@android:color/white" />
+
+            <!-- Botón personalizado de iniciar sesión con Google -->
+            <Button
+                android:id="@+id/btn_google_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Iniciar sesión con Google"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/design_default_color_primary"
                 android:textColor="@android:color/white"
                 android:padding="10dp"/>
         </LinearLayout>
