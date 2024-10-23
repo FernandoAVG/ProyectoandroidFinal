@@ -2,4 +2,6 @@
     <string name="app_name">ProyectoAndroidFirebase</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">867515531803-d66pi1jiq9lgneofkf9s8irglu00n70i.apps.googleusercontent.com</string>
+
 </resources>

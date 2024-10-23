@@ -15,16 +15,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);  // Referencia al layout activity_main.xml
+        setContentView(R.layout.activity_main);
 
-        // Verificar si el fragmento ya está cargado, de lo contrario, cargar InicioFragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new InicioFragment())  // Cargar InicioFragment
+                    .replace(R.id.fragment_container, new InicioFragment())
                     .commit();
         }
     }
