@@ -13,21 +13,16 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    // clase java adaptador para tareas
-
-    //task adapter para list del viewholder, donde se ven las tareas.
     private List<Task> tasks;
 
-    //cpnstructos
     public TaskAdapter(List<Task> tasks) {
         this.tasks = tasks;
     }
 
     public void updateTaskList(List<Task> newTaskList) {
         this.tasks = newTaskList;
-        notifyDataSetChanged(); // Notificar cambios para actualizar la vista
+        notifyDataSetChanged(); // Actualizar la vista
     }
-
 
     @NonNull
     @Override
@@ -40,13 +35,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.bind(task);
-        // lol
+
+        // Marcar como completada o no, y actualizar visualmente en Firebase si es necesario
         holder.itemView.setOnClickListener(v -> {
             task.setCompletada(!task.isCompletada());
-            notifyItemChanged(position); // Actualiza la vista solo de la tarea modificada
+            notifyItemChanged(position); // Actualiza solo el elemento modificado
 
-            // lo de abajo es para actualizar en la base de datos de Firebase si lo ven necesario (lo dejo como comentario)
-            // updateTaskInDatabase(task);
+            // Actualización opcional en Firebase
+            // updateTaskInFirebase(task);
         });
     }
 
@@ -56,19 +52,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleTextView, descriptionTextView;
+        private TextView titleTextView, descriptionTextView, dateTextView, priorityTextView, tagsTextView;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.text_view_title);
             descriptionTextView = itemView.findViewById(R.id.text_view_description);
+            dateTextView = itemView.findViewById(R.id.text_view_date);
+            priorityTextView = itemView.findViewById(R.id.text_view_priority);
+            tagsTextView = itemView.findViewById(R.id.text_view_tags);
         }
 
         public void bind(Task task) {
             titleTextView.setText(task.getTitulo());
             descriptionTextView.setText(task.getDescripcion());
-            // Cambiar el estilo si la tarea está completada
-            itemView.setAlpha(task.isCompletada() ? 0.5f : 1.0f); // Ejemplo de opacidad
+            dateTextView.setText(task.getFecha());
+            priorityTextView.setText("Prioridad: " + task.getPrioridad());
+            tagsTextView.setText("Etiquetas: " + String.join(", ", task.getEtiquetas()));
+
+            // Cambiar estilo si la tarea está completada
+            itemView.setAlpha(task.isCompletada() ? 0.5f : 1.0f);
         }
     }
 }

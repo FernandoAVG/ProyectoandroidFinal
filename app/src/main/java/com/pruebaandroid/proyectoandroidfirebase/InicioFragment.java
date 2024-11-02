@@ -25,24 +25,31 @@ import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
 public class InicioFragment extends Fragment {
-    //declaracion de variables
-    private ImageButton btn_filter, btn_ordenar, btn_crear, btn_menu;
-    private RecyclerView recyclerViewTasks; //recycler (en donde se ven las tareas)
-    private TaskAdapter taskAdapter; //adaptador
-    private List<Task> taskList; //array
+    private ImageButton btn_filter, btn_ordenar, btn_crear;
+    private RecyclerView recyclerViewTasks;
+    private TaskAdapter taskAdapter;
+    private List<Task> taskList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
-
+        // Referencias de botones
         btn_filter = view.findViewById(R.id.btn_filter);
         btn_ordenar = view.findViewById(R.id.btn_ordenar);
         btn_crear = view.findViewById(R.id.btn_crear);
@@ -54,22 +61,46 @@ public class InicioFragment extends Fragment {
         taskAdapter = new TaskAdapter(taskList);
         recyclerViewTasks.setAdapter(taskAdapter);
 
-        // Cargar tareas (esto puede venir de una base de datos, de momento estático)
-        loadTasks();
-        // Se supone que navController es donde se tiene tooodo lo que sea nav, aver si funciona D:
+        // Cargar tareas desde Firebase
+        cargarTareasDesdeFirebase();
 
-        btn_crear.setOnClickListener(v -> {
-            replaceFragment(new crearTarea());
-        });
+        // Botón para crear nueva tarea
+        btn_crear.setOnClickListener(v -> replaceFragment(new crearTarea()));
 
-        // Listener para el botón de filtrar
+        // Botones de filtrar y ordenar (a implementar según tu lógica)
         btn_filter.setOnClickListener(v -> showFilterDialog());
-
-        // Listener para el botón de ordenar
         btn_ordenar.setOnClickListener(v -> showSortDialog());
 
         return view;
     }
+
+    // Método para cargar tareas desde Firebase
+    private void cargarTareasDesdeFirebase() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("tareas").child(userId);
+
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    taskList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Task tarea = snapshot.getValue(Task.class);
+                        taskList.add(tarea);
+                    }
+                    taskAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Error al cargar tareas", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+
 
     //---------------FILTRAR TAREA-----------------
 
@@ -91,12 +122,12 @@ public class InicioFragment extends Fragment {
                     }
 
                     // Llama a applyFilter con el filtro seleccionado
-                    applyFilter(selectedFilter);
+                    //applyFilter(selectedFilter);(Esto igual)
                 });
         builder.create().show();
     }
-
-    private void applyFilter(String filterOption) {
+// Lo puse asi porque me daba problmitas con lo que estoy haciendo ahora :V
+    /*private void applyFilter(String filterOption) {
         List<Task> filteredTasks = new ArrayList<>();
 
         switch (filterOption) {
@@ -135,7 +166,7 @@ public class InicioFragment extends Fragment {
 
         // Aquí puedes actualizar la vista del RecyclerView o ListView con las tareas filtradas
         updateTaskListView(filteredTasks);
-    }
+    }*/
 
     //------------ORDENAR TAREA----------------
 
@@ -165,12 +196,12 @@ public class InicioFragment extends Fragment {
 
     //-------------------------------------------------------
 
-    // Cargar algunas tareas de ejemplo
-    private void loadTasks() {
+    // Cargar algunas tareas de ejemplo esto tambien :V
+    /*private void loadTasks() {
         taskList.add(new Task("Comprar comida", "Ir al supermercado", "Personal", "amarillo"));
         taskList.add(new Task("Reunión de trabajo", "Zoom a las 10am", "trabajo", "verde"));
         taskAdapter.notifyDataSetChanged(); // Actualizar la lista en el RecyclerView
-    }
+    }*/
 
     private void updateTaskListView(List<Task> filteredTasks) {
         taskAdapter.updateTaskList(filteredTasks);
