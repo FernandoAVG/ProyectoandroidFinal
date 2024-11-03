@@ -33,7 +33,7 @@ public class Task implements Serializable {
     }
 
     // Getters
-    public int getId() { return id; }
+    public int getId() { return id; } // Cambiado a int
     public String getTitulo() { return titulo; }
     public String getDescripcion() { return descripcion; }
     public String getFecha() { return fecha; }
