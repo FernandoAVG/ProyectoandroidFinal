@@ -44,6 +44,7 @@ public class InicioFragment extends Fragment {
     private TaskAdapter taskAdapter;
     private List<Task> taskList;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class InicioFragment extends Fragment {
 
         return view;
     }
+
 
     // Método para cargar tareas desde Firebase
     private void cargarTareasDesdeFirebase() {
@@ -196,12 +198,6 @@ public class InicioFragment extends Fragment {
 
     //-------------------------------------------------------
 
-    // Cargar algunas tareas de ejemplo esto tambien :V
-    /*private void loadTasks() {
-        taskList.add(new Task("Comprar comida", "Ir al supermercado", "Personal", "amarillo"));
-        taskList.add(new Task("Reunión de trabajo", "Zoom a las 10am", "trabajo", "verde"));
-        taskAdapter.notifyDataSetChanged(); // Actualizar la lista en el RecyclerView
-    }*/
 
     private void updateTaskListView(List<Task> filteredTasks) {
         taskAdapter.updateTaskList(filteredTasks);

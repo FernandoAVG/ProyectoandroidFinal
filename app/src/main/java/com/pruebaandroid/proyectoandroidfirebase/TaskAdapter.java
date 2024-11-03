@@ -3,6 +3,7 @@ package com.pruebaandroid.proyectoandroidfirebase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,20 +32,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
+    //-----------------------------------------------//
+
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.bind(task);
 
-        // Marcar como completada o no, y actualizar visualmente en Firebase si es necesario
-        holder.itemView.setOnClickListener(v -> {
-            task.setCompletada(!task.isCompletada());
-            notifyItemChanged(position); // Actualiza solo el elemento modificado
-
-            // Actualización opcional en Firebase
-            // updateTaskInFirebase(task);
-        });
     }
+
+
+
+
+    //--------------------------------------------------------//
 
     @Override
     public int getItemCount() {

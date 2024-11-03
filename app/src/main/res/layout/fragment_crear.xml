@@ -152,21 +152,21 @@
                 style="@style/Widget.MaterialComponents.Chip.Entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etiqueta 1" />
+                android:text="Trabajo" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip2"
                 style="@style/Widget.MaterialComponents.Chip.Entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etiqueta 2" />
+                android:text="Personal" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip3"
                 style="@style/Widget.MaterialComponents.Chip.Entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etiqueta 3" />
+                android:text="Urgente" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip4"

@@ -1,9 +1,10 @@
 package com.pruebaandroid.proyectoandroidfirebase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Task {
+public class Task implements Serializable {
     // Variable estática para generar IDs autoincrementales
     private static int idCounter = 1;
 
