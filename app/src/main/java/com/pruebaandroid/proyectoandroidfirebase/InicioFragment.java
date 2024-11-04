@@ -1,6 +1,11 @@
 package com.pruebaandroid.proyectoandroidfirebase;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.view.View;
+import android.widget.Button;
+
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -25,120 +30,141 @@ import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
 public class InicioFragment extends Fragment {
-    //declaracion de variables
-    private ImageButton btn_filter, btn_ordenar, btn_crear, btn_menu;
-    private RecyclerView recyclerViewTasks; //recycler (en donde se ven las tareas)
-    private TaskAdapter taskAdapter; //adaptador
-    private List<Task> taskList; //array
+    private ImageButton btn_filter, btn_ordenar, btn_crear;
+    private RecyclerView recyclerViewTasks;
+    private TaskAdapter taskAdapter;
+    private List<Task> taskList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
+        // Inicializar la lista de tareas
+        taskList = new ArrayList<>();
 
+        // Referencias de botones y RecyclerView
         btn_filter = view.findViewById(R.id.btn_filter);
         btn_ordenar = view.findViewById(R.id.btn_ordenar);
         btn_crear = view.findViewById(R.id.btn_crear);
         recyclerViewTasks = view.findViewById(R.id.recycler_view_tasks);
 
         // Configurar el RecyclerView
-        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskList = new ArrayList<>();
         taskAdapter = new TaskAdapter(taskList);
         recyclerViewTasks.setAdapter(taskAdapter);
+        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Cargar tareas (esto puede venir de una base de datos, de momento estático)
-        loadTasks();
-        // Se supone que navController es donde se tiene tooodo lo que sea nav, aver si funciona D:
+        // Cargar tareas desde Firebase
+        cargarTareasDesdeFirebase();
 
-        btn_crear.setOnClickListener(v -> {
-            replaceFragment(new crearTarea());
-        });
+        // Botón para crear nueva tarea
+        btn_crear.setOnClickListener(v -> replaceFragment(new crearTarea()));
 
-        // Listener para el botón de filtrar
-        btn_filter.setOnClickListener(v -> showFilterDialog());
-
-        // Listener para el botón de ordenar
+        // Botones de filtrar y ordenar (a implementar según tu lógica)
+        btn_filter.setOnClickListener(v -> mostrarPopupFiltro());
         btn_ordenar.setOnClickListener(v -> showSortDialog());
 
         return view;
     }
 
-    //---------------FILTRAR TAREA-----------------
+    // Método para cargar tareas desde Firebase
+    private void cargarTareasDesdeFirebase() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("tareas").child(userId);
 
-    private void showFilterDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.popup_filtro, null);
-        builder.setView(dialogView)
-                .setTitle("Filtrar Tareas")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Aplicar", (dialog, which) -> {
-                    RadioGroup radioGroup = dialogView.findViewById(R.id.radio_group_status);
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
-                    String selectedFilter = "";
-
-                    // Obtener el texto del RadioButton seleccionado
-                    if (selectedId != -1) { // Asegúrate de que hay una opción seleccionada
-                        RadioButton selectedRadioButton = dialogView.findViewById(selectedId);
-                        selectedFilter = selectedRadioButton.getText().toString();
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    taskList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Task tarea = snapshot.getValue(Task.class);
+                        taskList.add(tarea);
                     }
+                    taskAdapter.notifyDataSetChanged();
+                }
 
-                    // Llama a applyFilter con el filtro seleccionado
-                    applyFilter(selectedFilter);
-                });
-        builder.create().show();
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Error al cargar tareas", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
-    private void applyFilter(String filterOption) {
-        List<Task> filteredTasks = new ArrayList<>();
+    // Método para mostrar el popup de filtrado
+    private void mostrarPopupFiltro() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.popup_filtro);
+        dialog.setCancelable(true);
 
-        switch (filterOption) {
-            case "Personal (Amarillo)":
-                for (Task task : taskList) {
-                    if (task.getCategoria().equals("Personal") && task.getColor().equals("Amarillo")) {
-                        filteredTasks.add(task);
-                    }
-                }
-                break;
+        // Inicializar componentes del popup
+        Spinner spinnerPriority = dialog.findViewById(R.id.spinner_priority);
+        RadioGroup radioGroupStatus = dialog.findViewById(R.id.radio_group_status);
+        Button btn_apply_filter = dialog.findViewById(R.id.btn_apply_filter);
 
-            case "Trabajo (Verde)":
-                for (Task task : taskList) {
-                    if (task.getCategoria().equals("Trabajo") && task.getColor().equals("Verde")) {
-                        filteredTasks.add(task);
-                    }
-                }
-                break;
+        btn_apply_filter.setOnClickListener(v -> {
+            String selectedPriority = spinnerPriority.getSelectedItem().toString();
+            int selectedStatusId = radioGroupStatus.getCheckedRadioButtonId();
+            String selectedStatus = "todos";
 
-            case "Estudio (Azul)":
-                for (Task task : taskList) {
-                    if (task.getCategoria().equals("Estudio") && task.getColor().equals("Azul")) {
-                        filteredTasks.add(task);
-                    }
-                }
-                break;
+            if (selectedStatusId == R.id.radio_completed) {
+                selectedStatus = "completadas";
+            } else if (selectedStatusId == R.id.radio_pending) {
+                selectedStatus = "pendientes";
+            }
 
-            case "Otros (Rojo)":
-                for (Task task : taskList) {
-                    if (task.getCategoria().equals("Otros") && task.getColor().equals("Rojo")) {
-                        filteredTasks.add(task);
-                    }
-                }
-                break;
+            // Filtrar la lista de tareas
+            List<Task> filteredTasks = filtrarTareas(selectedPriority, selectedStatus);
+            updateTaskListView(filteredTasks); // Actualiza el RecyclerView
+
+            dialog.dismiss(); // Cerrar el popup después de aplicar el filtro
+        });
+
+        dialog.show();
+    }
+
+    // Filtrar tareas
+    private List<Task> filtrarTareas(String priority, String status) {
+        List<Task> filteredList = new ArrayList<>();
+
+        for (Task task : taskList) {
+            boolean matchesPriority = priority.equals("Todas") || task.getPrioridad() == Integer.parseInt(priority);
+            boolean matchesStatus;
+
+            if (status.equals("completadas")) {
+                matchesStatus = task.isCompletada();
+            } else if (status.equals("pendientes")) {
+                matchesStatus = !task.isCompletada();
+            } else {
+                matchesStatus = true; // Incluye todas si no se selecciona un estado
+            }
+
+            if (matchesPriority && matchesStatus) {
+                filteredList.add(task);
+            }
         }
 
-        // Aquí puedes actualizar la vista del RecyclerView o ListView con las tareas filtradas
-        updateTaskListView(filteredTasks);
+        return filteredList;
     }
 
-    //------------ORDENAR TAREA----------------
 
+    // Ordenar tareas
     private void showSortDialog() {
         String[] ordenOptions = {"A-Z", "Z-A"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -153,23 +179,11 @@ public class InicioFragment extends Fragment {
     // Función para aplicar la ordenación seleccionada
     private void applyOrden(String ordenOption) {
         if (ordenOption.equals("A-Z")) {
-            // Ordenar de A-Z (alfabéticamente)
             Collections.sort(taskList, (task1, task2) -> task1.getTitulo().compareToIgnoreCase(task2.getTitulo()));
         } else if (ordenOption.equals("Z-A")) {
-            // Ordenar de Z-A (alfabéticamente, invertido)
             Collections.sort(taskList, (task1, task2) -> task2.getTitulo().compareToIgnoreCase(task1.getTitulo()));
         }
-        // Actualizar la vista con la lista de tareas ordenadas
-        updateTaskListView(taskList);
-    }
-
-    //-------------------------------------------------------
-
-    // Cargar algunas tareas de ejemplo
-    private void loadTasks() {
-        taskList.add(new Task("Comprar comida", "Ir al supermercado", "Personal", "amarillo"));
-        taskList.add(new Task("Reunión de trabajo", "Zoom a las 10am", "trabajo", "verde"));
-        taskAdapter.notifyDataSetChanged(); // Actualizar la lista en el RecyclerView
+        updateTaskListView(taskList); // Actualiza la vista con la lista de tareas ordenadas
     }
 
     private void updateTaskListView(List<Task> filteredTasks) {
@@ -178,10 +192,10 @@ public class InicioFragment extends Fragment {
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager(); // Usa getParentFragmentManager si el fragmento está anidado
+        FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment); // Asegúrate de que este ID coincida con tu contenedor en el layout de la actividad
-        fragmentTransaction.addToBackStack(null); // Para permitir volver al fragmento anterior
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }
