@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -62,7 +64,7 @@ public class crearTarea extends Fragment {
         calendar = Calendar.getInstance();
 
         Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.iconcalendar);
-
+        buttonVolver.setOnClickListener(v -> volver(new InicioFragment()));
         // Ajustar el tamaño del ícono de calendario
         int ancho = 80;
         int alto = 80;
@@ -116,10 +118,10 @@ public class crearTarea extends Fragment {
         });
 
         // Configurar el botón de "Volver"
-        buttonVolver.setOnClickListener(v -> {
+        /*buttonVolver.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.action_to_volver);
-        });
+            navController.navigate(R.id.fragmentoMain);
+        });*/
 
         return view;
     }
@@ -191,5 +193,13 @@ public class crearTarea extends Fragment {
         );
 
         datePickerDialog.show();
+    }
+    private void volver(Fragment fragment) {
+        FragmentManager fragmentManager = getParentFragmentManager(); // Si el fragmento está anidado
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Reemplaza el fragmento actual con el fragmento de inicio
+        fragmentTransaction.replace(R.id.fragment_container, fragment); // Usa el ID de tu contenedor de fragmentos
+        fragmentTransaction.addToBackStack(null); // Opcional: permite regresar al fragmento actual si es necesario
+        fragmentTransaction.commit();
     }
 }
